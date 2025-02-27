@@ -1,41 +1,47 @@
 pipeline {
     agent any
+    environment {
+        DEPLOY_ENV = ''
+    }
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package -Dspring.profiles.active=stage'
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        DEPLOY_ENV = 'production'
+                    } else {
+                        DEPLOY_ENV = 'staging'
+                    }
+                }
+                bat 'mvn clean package -Dspring.profiles.active=%DEPLOY_ENV%'
+                archiveArtifacts artifacts: 'target\\*.jar', fingerprint: true
             }
         }
         stage('Test') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
-        stage('Deploy to Staging') {
-            when {
-                not { branch 'main' }
-            }
+        stage('Deploy') {
             steps {
-                sh 'docker build -t hello-world-ui:stage .'
-                sh 'docker run -d -p 8081:8080 --name hello-world-ui-stage hello-world-ui:stage'
-            }
-        }
-        stage('Deploy to Production') {
-            when {
-                branch 'main'
-            }
-            steps {
-                sh 'docker build -t hello-world-ui:prod .'
-                sh 'docker run -d -p 8080:8080 --name hello-world-ui-prod hello-world-ui:prod'
+                script {
+                    bat 'mkdir deployment'
+                    bat 'copy target\\*.jar deployment\\'
+                    if (DEPLOY_ENV == 'staging') {
+                        bat 'start java -jar deployment\\*.jar --server.port=8081'
+                    } else {
+                        bat 'start java -jar deployment\\*.jar --server.port=8080'
+                    }
+                }
             }
         }
     }
     post {
         success {
-            echo "Deployment successful on  environment."
+            echo "Deployment successful on ${DEPLOY_ENV} environment."
         }
         failure {
-            echo "Deployment failed on environment."
+            echo "Deployment failed on ${DEPLOY_ENV} environment."
         }
     }
 }
