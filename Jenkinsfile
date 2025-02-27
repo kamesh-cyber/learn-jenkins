@@ -13,7 +13,7 @@ pipeline {
                         DEPLOY_ENV = 'staging'
                     }
                 }
-                bat 'mvn clean package -Dspring.profiles.active=%DEPLOY_ENV%'
+                bat 'mvn clean package -Dspring.profiles.active=${DEPLOY_ENV}'
                 archiveArtifacts artifacts: 'target\\*.jar', fingerprint: true
             }
         }
