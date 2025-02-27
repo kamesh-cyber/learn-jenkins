@@ -14,7 +14,7 @@ pipeline {
                     }
                 }
                 bat "docker build --build-arg DEPLOY_ENV=${env.DEPLOY_ENV} -t my-java-app ."
-                archiveArtifacts artifacts: 'target\\*.jar', fingerprint: true
+                archiveArtifacts artifacts: '*.jar', fingerprint: true
             }
         }
         stage('Deploy') {
