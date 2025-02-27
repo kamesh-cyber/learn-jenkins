@@ -8,12 +8,15 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
-                        DEPLOY_ENV = 'production'
+                        env.DEPLOY_ENV = 'production'
                     } else {
-                        DEPLOY_ENV = 'staging'
+                        env.DEPLOY_ENV = 'staging'
                     }
                 }
-                bat 'mvn clean package -Dspring.profiles.active=${DEPLOY_ENV}'
+                bat '''
+                set DEPLOY_ENV=${DEPLOY_ENV}
+                mvn clean package -Dspring.profiles.active=%DEPLOY_ENV%
+                '''
                 archiveArtifacts artifacts: 'target\\*.jar', fingerprint: true
             }
         }
