@@ -31,4 +31,4 @@ EXPOSE 8081
 ENV DEPLOY_ENV=${DEPLOY_ENV}
 
 # Run the JAR file with the correct profile
-CMD ["sh", "-c", "java -jar app.jar --spring.profiles.active=staging --server.port=$([ \"$DEPLOY_ENV\" = \"production\" ] && echo 8080 || echo 8081)"]
+CMD ["sh", "-c", "java -jar app.jar --spring.profiles.active=`staging` --server.port=$([ \"$DEPLOY_ENV\" = \"production\" ] && echo 8080 || echo 8081)"]
