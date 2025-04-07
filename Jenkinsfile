@@ -25,7 +25,7 @@ pipeline {
                     if (DEPLOY_ENV == 'staging') {
                         bat 'docker run -d -p 8081:8081 --name my-java-app my-java-app'
                     } else {
-                        bat 'docker run -d -p 8080:8080 --name my-java-app my-java-app'
+                        bat 'docker run -d -p 8082:8082 --name my-java-app my-java-app'
                     }
                 }
             }
