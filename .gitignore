@@ -22,4 +22,7 @@ logs/
 *.tmp
 
 # Ignore environment variables
-.env 
+.env
+
+# Ignore idea
+.idea

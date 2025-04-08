@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HelloController {
-	@Value("${spring.profiles.active}")
-	private String environment;
+	@Value("${spring.application.name}")
+	private String name;
 
 	@GetMapping("/")
 	public String home(Model model) {
-		model.addAttribute("environment", environment);
+		model.addAttribute("environment", name);
 		return "index";
 	}
 
